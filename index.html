@@ -1,5 +1,6 @@
 <!doctype html>
 <head>
+<title>NHL What If?</title>
 <meta http-equiv="X-UA-Compatible" content="IE=Edge">
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="js/nhlwhatif.js"></script>
@@ -51,8 +52,65 @@ background-color:#98FB98;
 .lose-overtime{
 background-color:#FB9898;
 }
+.win-shootout{
+background-color: #98FB98;
+background-size: 25px 25px;
+background-image: -webkit-gradient(linear, 0 100%, 100% 0,
+									color-stop(.25, rgba(255, 255, 255, .7)), color-stop(.25, transparent),
+									color-stop(.5, transparent), color-stop(.5, rgba(255, 255, 255, .7)),
+									color-stop(.75, rgba(255, 255, 255, .7)), color-stop(.75, transparent),
+			 						to(transparent));
+			background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .7) 25%, transparent 25%,
+								transparent 50%, rgba(255, 255, 255, .7) 50%, rgba(255, 255, 255, .7) 75%,
+								transparent 75%, transparent);
+			background-image: -moz-linear-gradient(45deg, rgba(255, 255, 255, .7) 25%, transparent 25%,
+								transparent 50%, rgba(255, 255, 255, .7) 50%, rgba(255, 255, 255, .7) 75%,
+								transparent 75%, transparent);
+			background-image: -ms-linear-gradient(45deg, rgba(255, 255, 255, .7) 25%, transparent 25%,
+								transparent 50%, rgba(255, 255, 255, .7) 50%, rgba(255, 255, 255, .7) 75%,
+								transparent 75%, transparent);
+			background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, .7) 25%, transparent 25%,
+								transparent 50%, rgba(255, 255, 255, .7) 50%, rgba(255, 255, 255, .7) 75%,
+								transparent 75%, transparent);
+			background-image: linear-gradient(45deg, rgba(255, 255, 255, .7) 25%, transparent 25%,
+								transparent 50%, rgba(255, 255, 255, .7) 50%, rgba(255, 255, 255, .7) 75%,
+								transparent 75%, transparent);
+}
+.lose-shootout{
+background-color: #FB9898;
+background-size: 25px 25px;
+background-image: -webkit-gradient(linear, 0 100%, 100% 0,
+									color-stop(.25, rgba(255, 255, 255, .7)), color-stop(.25, transparent),
+									color-stop(.5, transparent), color-stop(.5, rgba(255, 255, 255, .7)),
+									color-stop(.75, rgba(255, 255, 255, .7)), color-stop(.75, transparent),
+			 						to(transparent));
+			background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .7) 25%, transparent 25%,
+								transparent 50%, rgba(255, 255, 255, .7) 50%, rgba(255, 255, 255, .7) 75%,
+								transparent 75%, transparent);
+			background-image: -moz-linear-gradient(45deg, rgba(255, 255, 255, .7) 25%, transparent 25%,
+								transparent 50%, rgba(255, 255, 255, .7) 50%, rgba(255, 255, 255, .7) 75%,
+								transparent 75%, transparent);
+			background-image: -ms-linear-gradient(45deg, rgba(255, 255, 255, .7) 25%, transparent 25%,
+								transparent 50%, rgba(255, 255, 255, .7) 50%, rgba(255, 255, 255, .7) 75%,
+								transparent 75%, transparent);
+			background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, .7) 25%, transparent 25%,
+								transparent 50%, rgba(255, 255, 255, .7) 50%, rgba(255, 255, 255, .7) 75%,
+								transparent 75%, transparent);
+			background-image: linear-gradient(45deg, rgba(255, 255, 255, .7) 25%, transparent 25%,
+								transparent 50%, rgba(255, 255, 255, .7) 50%, rgba(255, 255, 255, .7) 75%,
+								transparent 75%, transparent);
+}
 </style>
-
+<!--[if IE]>
+<style type="text/css">
+  .win-shootout{
+background-color:orange;
+}
+.lose-shootout{
+background-color:grey;
+}
+</style>
+<![endif]-->
 
 </head>
 <body>
@@ -67,18 +125,22 @@ background-color:#FB9898;
 
 <div id="whatifs" style="position:relative;top:-50px;float:left;padding-left:10px;margin-left:300px">
 <div id="instructions" style="padding:5px;float:left;border:2px solid #121212;width:630px;text-align:left;margin-bottom:25px;">
+<div style="float:right;">
+<div style="float:right;" class="win-shootout game">SO Win</div>
+<div style="float:right;" class="win-overtime game">OT Win</div>
+<div style="float:right;" class="win game">Win</div><br/><br/>
+<div style="float:right;" class="lose-shootout game">SO Loss</div>
 <div style="float:right;" class="lose-overtime game">OT Loss</div>
 <div style="float:right;" class="lose game">Loss</div>
-<div style="float:right;" class="win-overtime game">OT Win</div>
-<div style="float:right;" class="win game">Win</div>
+</div>
 <b style="font-size:10pt;">Instructions:</b> <span style="font-size:8pt;">Click on a game below to toggle the result.  Point totals will update with every click, and standings will be reordered.</span>
 </div>
 <br/><br/>
 	<div id="Sabres" class="teamgames">
 		<div style="text-align:center;width:100%;">Sabres</div>
 	</div>
-	<div id="Canadians" class="teamgames">
-		<div style="text-align:center;width:100%;">Canadians</div>
+	<div id="Canadiens" class="teamgames">
+		<div style="text-align:center;width:100%;">Canadiens</div>
 	</div>
 	<div id="Flyers" class="teamgames">
 		<div style="text-align:center;width:100%;">Flyers</div>

@@ -11,11 +11,11 @@ $(document).click(function(event){
 		var gameid;
 		var classes = $(div).attr("class").split(" ");
 		for(var i=0;i<classes.length;i++){
-			if(classes[i] != "game" && classes[i] != "win" && classes[i] != "lose" && classes[i] != "win-overtime" && classes[i] != "lose-overtime" && classes[i] != "nostatus"){
+			if(classes[i] != "game" && classes[i] != "win" && classes[i] != "lose" && classes[i] != "win-overtime" && classes[i] != "lose-overtime" && classes[i] != "lose-shootout" && classes[i] != "win-shootout" && classes[i] != "nostatus"){
 				gameid = classes[i];
 			}
 		}
-		//console.log(gameid);
+		//console.log("game id is : " + gameid);
 		var otherdiv;
 		$('.' + gameid).each(function(){
 			if($(this).attr('id') != $(div).attr('id')){
@@ -35,7 +35,18 @@ $(document).click(function(event){
 
 					var points = this.points;
 					this.points = parseInt(this.points) + 2;
+					//also add one to row
+					this.row = parseInt(this.row) + 1;
+					//add one to game played
+					this.gp = parseInt(this.gp) + 1;
 
+				}
+			});
+			//add a gp to the loser
+			var loser = $(otherdiv).parent().attr('id');
+			$.each(easternConferenceStandings, function(){
+				if(this.name == loser){
+					this.gp = parseInt(this.gp) + 1;
 				}
 			});
 			
@@ -49,14 +60,28 @@ $(document).click(function(event){
 				if(this.name == loser){
 					var points = this.points;
 					this.points = parseInt(this.points) + 1;
-					console.log(this.points);
+					
 				}
 			});
 		}
 		else if($(div).hasClass("win-overtime")){
-			$(div).removeClass("win-overtime").addClass("lose");
-			$(otherdiv).removeClass("lose-overtime").addClass("win");
+			$(div).removeClass("win-overtime").addClass("win-shootout");
+			$(otherdiv).removeClass("lose-overtime").addClass("lose-shootout");
+			//need to remove 1 from row
+			var thisguy = $(div).parent().attr('id');
+			$.each(easternConferenceStandings, function(){
+				if(this.name == thisguy){
+					this.row = parseInt(this.row) - 1;
+				}
+			});
+
+		}
+		else if($(div).hasClass("win-shootout")){
+			$(div).removeClass("win-shootout").addClass("lose");
+			$(otherdiv).addClass("win").removeClass("lose-shootout");
+			
 			//need to add 1 point to the former loser andd subtract two from former winner
+			//also need to add 1 to row of the other guy
 			var thisguy = $(div).parent().attr('id');
 			$.each(easternConferenceStandings, function(){
 				if(this.name == thisguy){
@@ -69,6 +94,7 @@ $(document).click(function(event){
 				if(this.name == otherguy){
 					var points = this.points;
 					this.points = parseInt(this.points) + 1;
+					this.row = parseInt(this.row) + 1;
 
 				}
 			});
@@ -86,14 +112,27 @@ $(document).click(function(event){
 			});
 		}
 		else if($(div).hasClass("lose-overtime")){
-			$(div).removeClass("lose-overtime").addClass("nostatus");
-			$(otherdiv).removeClass("win-overtime").addClass("nostatus");
+			$(div).removeClass("lose-overtime").addClass("lose-shootout");
+			$(otherdiv).removeClass("win-overtime").addClass("win-shootout");
+			//remove 1 from row of the other guy
+			var otherguy = $(otherdiv).parent().attr('id');
+			$.each(easternConferenceStandings, function(){
+				if(this.name == otherguy){
+					var points = this.points;
+					this.row = parseInt(this.row) - 1;
+				}
+			});
+		}
+		else if($(div).hasClass("lose-shootout")){
+			$(div).removeClass("lose-shootout").addClass("nostatus");
+			$(otherdiv).removeClass("win-shootout").addClass("nostatus");
 			//need to add 1 point to the former loser andd subtract two from former winner
 			var thisguy = $(div).parent().attr('id');
 			$.each(easternConferenceStandings, function(){
 				if(this.name == thisguy){
 					var points = this.points;
 					this.points = parseInt(this.points) -1;
+					this.gp = parseInt(this.gp) - 1;
 				}
 			});
 			var otherguy = $(otherdiv).parent().attr('id');
@@ -101,9 +140,15 @@ $(document).click(function(event){
 				if(this.name == otherguy){
 					var points = this.points;
 					this.points = parseInt(this.points) -2;
+					this.gp = parseInt(this.gp) - 1;
 				}
 			});
 		}
+
+		$.each(easternConferenceStandings, function(){
+			
+		});
+
 
 		calculateStandings(easternConferenceStandings);
 	}
@@ -156,9 +201,19 @@ function calculateStandings(theStandings){
 				northeastI = i;
 			}
 			else if(this.points == northeast.points){
-				//TODO: Tiebreakers
-				northeast = this;
-				northeastI = i;
+				if(this.gp < northeast.gp){
+					northeast = this;
+					northeastI = i;
+				}
+				else if(this.row > northeast.row){
+					northeast = this;
+					northeastI = i;
+				}
+				else if(this.row == northeast.row){
+					//well gee, I ain't going that far
+					northeast = this;
+					northeastI = i;
+				}
 			}
 		}
 		else if(this.division == "southeast"){
@@ -171,9 +226,19 @@ function calculateStandings(theStandings){
 				southeastI = i;
 			}
 			else if(this.points == southeast.points){
-				//TODO: Tiebreakers
-				southeast = this;
-				southeastI = i;
+				if(this.gp < southeast.gp){
+					southeast = this;
+					southeastI = i;
+				}
+				else if(this.row > southeast.row){
+					southeast = this;
+					southeastI = i;
+				}
+				else if(this.row == southeast.row){
+					//well gee, I ain't going that far
+					southeast = this;
+					southeastI = i;
+				}
 			}
 		}
 		else if(this.division == "atlantic"){
@@ -186,9 +251,19 @@ function calculateStandings(theStandings){
 				atlanticI = i;
 			}
 			else if(this.points == atlantic.points){
-				//TODO: Tiebreakers
-				atlantic = this;
-				atlanticI = i;
+				if(this.gp < atlantic.gp){
+					atlantic = this;
+					atlanticI = i;
+				}
+				else if(this.row > atlantic.row){
+					atlantic = this;
+					atlanticI = i;
+				}
+				else if(this.row == atlantic.row){
+					//well gee, I ain't going that far
+					atlantic = this;
+					atlanticI = i;
+				}
 			}
 		}
 	});
@@ -229,9 +304,19 @@ function calculateStandings(theStandings){
 				topTeamIndex = i;
 			}
 			else if(this.points == topTeam.points){
-				//TODO Tiebreakers
-				topTeam = this;
-				topTeamIndex = i;
+				if(this.gp < topTeam.gp){
+					topTeam = this;
+					topTeamIndex = i;
+				}
+				else if(this.row > topTeam.row){
+					topTeam = this;
+					topTeamIndex = i;
+				}
+				else if(this.row == topTeam.row){
+					//well gee, I ain't going that far
+					topTeam = this;
+					topTeamIndex = i;
+				}
 			}
 		});
 		if(!standingsBuilt)
@@ -267,9 +352,21 @@ function calculateStandings(theStandings){
 				topTeamIndex = i;
 			}
 			else if(this.points == topTeam.points){
-				//TODO Tiebreakers
-				topTeam = this;
-				topTeamIndex = i;
+				//console.log("comparing " + this.name + "(" + this.gp + ") and " + topTeam.name + "(" + topTeam.gp + ")");
+				if(this.gp < topTeam.gp){
+					//console.log("assigning top team " + this.name);
+					topTeam = this;
+					topTeamIndex = i;
+				}
+				else if(this.row > topTeam.row){
+					topTeam = this;
+					topTeamIndex = i;
+				}
+				else if(this.row == topTeam.row){
+					//well gee, I ain't going that far
+					topTeam = this;
+					topTeamIndex = i;
+				}
 			}
 		});
 		if(!standingsBuilt){
